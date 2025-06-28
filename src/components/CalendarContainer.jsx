@@ -100,23 +100,6 @@ const CalendarContainer = () => {
     }
   };
 
-  const handleAddEvent = (newEvent) => {
-    setEvents([...events, { ...newEvent, id: Date.now() }]);
-    setSelectedEvent(null);
-  };
-
-  const handleEditEvent = (updatedEvent) => {
-    setEvents(events.map(event => 
-      event.id === updatedEvent.id ? updatedEvent : event
-    ));
-    setSelectedEvent(null);
-  };
-
-  const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter(event => event.id !== eventId));
-    setSelectedEvent(null);
-  };
-
   return (
     <Container 
       width="100%"
@@ -151,8 +134,6 @@ const CalendarContainer = () => {
       {selectedEvent !== null && (
         <EventModal 
           event={selectedEvent}
-          onEdit={handleEditEvent}
-          onDelete={handleDeleteEvent}
           onClose={() => setSelectedEvent(null)}
         />
       )}
