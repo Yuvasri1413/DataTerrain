@@ -41,6 +41,15 @@ const CalendarContainer = () => {
     {
       id: 3,
       title: 'django developer',
+      description: 'Interviewer',
+      interviewer: 'Vinodini',
+      date: '2025-06-29',
+      startTime: '05:00 AM',
+      endTime: '08:00 AM'
+    },
+    {
+      id: 3,
+      title: 'django developer',
       description: 'Test',
       interviewer: 'Vinodini',
       date: '2025-06-29',

@@ -5,7 +5,8 @@ import {
   Paper, 
   Grid, 
   Divider,
-  useTheme
+  useTheme,
+  Badge
 } from '@mui/material';
 import { format, parseISO } from 'date-fns';
 
@@ -78,8 +79,8 @@ const DayView = ({
               xs={2}
               sx={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
                 height: '100%',
                 position: 'relative'
               }}
@@ -143,15 +144,7 @@ const DayView = ({
                     marginBottom: theme.spacing(1),
                     position: 'relative',
                     transition: 'all 0.3s ease',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      width: '6px',
-                      backgroundColor: '#1976d2'
-                    },
+                    borderLeft: '10px solid #1976d2',
                     '&:hover': {
                       transform: 'scale(1.02)',
                       boxShadow: theme.shadows[4]
@@ -165,83 +158,193 @@ const DayView = ({
                     onEventClick(event, e.currentTarget, similarEvents);
                   }}
                 >
-                  <Box sx={{
-                    flex: 1,
-                    p: {
-                      xs: 0.5,
-                      sm: 0.75,
-                      md: 1
-                    },
-                    pl: {
-                      xs: 2,
-                      sm: 3,
-                      md: 4
-                    },
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'flex-start',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
-                    width: 'auto',
-                    minWidth: {
-                      xs: '150px',
-                      sm: '200px',
-                      md: '250px'
-                    }
-                  }}>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        fontWeight: 'bold',
-                        fontSize: {
-                          xs: '0.7rem',
-                          sm: '0.8rem',
-                          md: '0.9rem'
+                  {(() => {
+                    const similarEventsCount = events.filter(
+                      ev => ev.startTime === event.startTime &&
+                        format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+                    ).length;
+
+                    return similarEventsCount > 1 ? (
+                      <Badge 
+                        badgeContent={similarEventsCount}
+                        color="primary" 
+                        sx={{
+                          '& .MuiBadge-badge': {
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            padding: 0,
+                            backgroundColor: '#FFDB58',
+                            color: 'black'
+                          }
+                        }}
+                      >
+                        <Box sx={{
+                          flex: 1,
+                          p: {
+                            xs: 0.5,
+                            sm: 0.75,
+                            md: 1
+                          },
+                          pl: {
+                            xs: 2,
+                            sm: 3,
+                            md: 4
+                          },
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          justifyContent: 'flex-start',
+                          flexDirection: 'column',
+                          overflow: 'hidden',
+                          width: 'auto',
+                          minWidth: {
+                            xs: '100px',
+                            sm: '150px',
+                            md: '200px'
+                          }
+                        }}>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 'bold',
+                              fontSize: {
+                                xs: '0.7rem',
+                                sm: '0.8rem',
+                                md: '0.9rem'
+                              },
+                              wordBreak: 'break-word',
+                              mb: {
+                                xs: 0.25,
+                                sm: 0.35,
+                                md: 0.5
+                              }
+                            }}
+                          >
+                            {event.title}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            sx={{
+                              fontSize: {
+                                xs: '0.6rem',
+                                sm: '0.7rem',
+                                md: '0.8rem'
+                              },
+                              wordBreak: 'break-word',
+                              mb: {
+                                xs: 0.15,
+                                sm: 0.25,
+                                md: 0.35
+                              }
+                            }}
+                          >
+                            Interviewer: {event.interviewer}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="textSecondary"
+                            sx={{
+                              fontSize: {
+                                xs: '0.5rem',
+                                sm: '0.6rem',
+                                md: '0.7rem'
+                              },
+                              wordBreak: 'break-word'
+                            }}
+                          >
+                            {event.startTime} - {event.endTime}
+                          </Typography>
+                        </Box>
+                      </Badge>
+                    ) : (
+                      <Box sx={{
+                        flex: 1,
+                        p: {
+                          xs: 0.5,
+                          sm: 0.75,
+                          md: 1
                         },
-                        wordBreak: 'break-word',
-                        mb: {
-                          xs: 0.25,
-                          sm: 0.35,
-                          md: 0.5
+                        pl: {
+                          xs: 2,
+                          sm: 3,
+                          md: 4
+                        },
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'flex-start',
+                        flexDirection: 'column',
+                        overflow: 'hidden',
+                        width: 'auto',
+                        minWidth: {
+                          xs: '100px',
+                          sm: '150px',
+                          md: '200px'
                         }
-                      }}
-                    >
-                      {event.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      sx={{
-                        fontSize: {
-                          xs: '0.6rem',
-                          sm: '0.7rem',
-                          md: '0.8rem'
-                        },
-                        wordBreak: 'break-word',
-                        mb: {
-                          xs: 0.15,
-                          sm: 0.25,
-                          md: 0.35
-                        }
-                      }}
-                    >
-                      Interviewer: {event.interviewer}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="textSecondary"
-                      sx={{
-                        fontSize: {
-                          xs: '0.5rem',
-                          sm: '0.6rem',
-                          md: '0.7rem'
-                        },
-                        wordBreak: 'break-word'
-                      }}
-                    >
-                      {event.startTime} - {event.endTime}
-                    </Typography>
-                  </Box>
+                      }}>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            fontWeight: 'bold',
+                            fontSize: {
+                              xs: '0.7rem',
+                              sm: '0.8rem',
+                              md: '0.9rem'
+                            },
+                            wordBreak: 'break-word',
+                            mb: {
+                              xs: 0.25,
+                              sm: 0.35,
+                              md: 0.5
+                            }
+                          }}
+                        >
+                          {event.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          sx={{
+                            fontSize: {
+                              xs: '0.6rem',
+                              sm: '0.7rem',
+                              md: '0.8rem'
+                            },
+                            wordBreak: 'break-word',
+                            mb: {
+                              xs: 0.15,
+                              sm: 0.25,
+                              md: 0.35
+                            }
+                          }}
+                        >
+                          Interviewer: {event.interviewer}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          color="textSecondary"
+                          sx={{
+                            fontSize: {
+                              xs: '0.5rem',
+                              sm: '0.6rem',
+                              md: '0.7rem'
+                            },
+                            wordBreak: 'break-word'
+                          }}
+                        >
+                          {event.startTime} - {event.endTime}
+                        </Typography>
+                      </Box>
+                    );
+                  })()}
                 </Paper>
               ))}
             </Grid>
