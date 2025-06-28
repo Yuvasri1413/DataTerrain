@@ -15,7 +15,7 @@ const MainEventView = ({
   onEventClick 
 }) => {
   const theme = useTheme();
-
+debugger;
   return (
     <Paper
       elevation={2}

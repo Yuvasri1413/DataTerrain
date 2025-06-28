@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Container, 
+  ListItem, 
   useMediaQuery, 
   useTheme 
 } from '@mui/material';
@@ -24,54 +25,47 @@ const CalendarContainer = () => {
       date: '2025-06-29',
       startTime: '05:00 AM',
       endTime: '08:00 AM'
+
     },
-    {
-      id: 2,
-      title: 'django developer',
-      description: 'Interviewer',
-      interviewer: 'Vinodini',
-      date: '2025-06-29',
-      startTime: '05:00 AM',
-      endTime: '08:00 AM'
-    },
-    {
-      id: 3,
-      title: 'django developer',
-      description: 'Interviewer',
-      interviewer: 'Vinodini',
-      date: '2025-06-29',
-      startTime: '05:00 AM',
-      endTime: '08:00 AM'
-    },
-    {
-      id: 3,
-      title: 'django developer',
-      description: 'Test',
-      interviewer: 'Vinodini',
-      date: '2025-06-29',
-      startTime: '07:00 AM',
-      endTime: '09:00 AM'
-    },
-    {
-      id: 4,
-      title: 'django developer',
-      description: 'Test',
-      interviewer: 'Vinodini',
-      date: '2025-07-01',
-      startTime: '05:00 AM',
-      endTime: '08:00 AM'
-    },
-    {
-      id: 5,
-      title: 'django developer',
-      description: 'Test',
-      interviewer: 'Vinodini',
-      date: '2025-07-03',
-      startTime: '05:00 PM',
-      endTime: '06:00 PM'
-    }
   ]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/calendarfromtoenddate.json');
+        const data = await response.json();
+        console.log('Fetched Events:', data);
+
+        // Transform the fetched data to match the existing events structure
+        const transformedEvents = data.map(item => ({
+          id: item.id,
+          title: item.user_det.job_id.jobRequest_Title,
+          description: item.desc,
+          interviewer: item.user_det.handled_by.firstName,
+          date: item.start.split('T')[0],
+          startTime: new Date(item.start).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: true 
+          }),
+          endTime: new Date(item.end).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            hour12: true 
+          }),
+          interviewVia: item.link
+        }));
+
+        console.log('Transformed Events:', transformedEvents);
+        setEvents(transformedEvents);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   const handleDateChange = (direction) => {
     const newDate = new Date(currentDate);
