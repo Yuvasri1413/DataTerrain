@@ -16,7 +16,7 @@ const theme = createTheme({
     mode: 'light', // or 'dark'
     primary: {
       main: '#3498db', // Bright blue
-      light: '#5dade2',
+      light: '#b5e2ff',
       dark: '#2980b9'
     },
     secondary: {
@@ -39,12 +39,38 @@ const theme = createTheme({
       'Arial',
       'sans-serif'
     ].join(','),
+    allVariants: {
+      color: 'black'
+    }
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
           textTransform: 'none'
+        }
+      }
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputBase-root': {
+            color: 'black'
+          },
+          '& .MuiInputLabel-root': {
+            color: 'black'
+          },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: 'black',
+            },
+            '&:hover fieldset': {
+              borderColor: 'black',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: 'black',
+            },
+          },
         }
       }
     }

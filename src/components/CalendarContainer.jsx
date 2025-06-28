@@ -3,7 +3,6 @@ import {
   Box, 
   Container, 
   Typography, 
-  Fab, 
   useMediaQuery, 
   useTheme 
 } from '@mui/material';
@@ -18,105 +17,53 @@ const CalendarContainer = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [currentDate, setCurrentDate] = useState(new Date('2025-08-29'));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [viewType, setViewType] = useState('day');
   const [events, setEvents] = useState([
-    // Day View Events (August 29th)
     {
       id: 1,
       title: 'django developer',
       description: '1st Round',
       interviewer: 'Vinodini',
-      date: '2025-08-29',
-      startTime: '05:00 PM',
-      endTime: '06:00 PM'
+      date: '2025-06-29',
+      startTime: '05:00 AM',
+      endTime: '08:00 AM'
     },
     {
       id: 2,
       title: 'django developer',
-      description: 'Test',
+      description: 'Interviewer',
       interviewer: 'Vinodini',
-      date: '2025-08-29',
-      startTime: '06:00 PM',
-      endTime: '07:00 PM'
+      date: '2025-06-29',
+      startTime: '05:00 AM',
+      endTime: '08:00 AM'
     },
     {
       id: 3,
       title: 'django developer',
-      description: 'Interviewer',
+      description: 'Test',
       interviewer: 'Vinodini',
-      date: '2025-08-29',
-      startTime: '07:00 PM',
-      endTime: '08:00 PM'
+      date: '2025-06-29',
+      startTime: '07:00 AM',
+      endTime: '09:00 AM'
     },
-    // Week View Events (March 5-11)
     {
       id: 4,
-      title: 'Python Developer',
-      description: 'Interviewer: Geetha',
-      date: '2025-03-05',
-      startTime: '10:00 AM',
-      endTime: '11:00 AM'
-    },
-    {
-      id: 5,
-      title: 'Python Developer',
-      description: 'Interviewer: Geetha',
-      date: '2025-03-06',
-      startTime: '10:00 AM',
-      endTime: '11:00 AM'
-    },
-    {
-      id: 6,
-      title: 'Python Developer',
-      description: 'Interviewer: Geetha',
-      date: '2025-03-07',
-      startTime: '10:00 AM',
-      endTime: '11:00 AM'
-    },
-    {
-      id: 7,
-      title: 'Python Developer',
-      description: 'Interviewer: Geetha',
-      date: '2025-03-08',
-      startTime: '10:00 AM',
-      endTime: '11:00 AM'
-    },
-    {
-      id: 8,
-      title: 'Python Developer',
-      description: 'Interviewer: Geetha',
-      date: '2025-03-09',
-      startTime: '10:00 AM',
-      endTime: '11:00 AM'
-    },
-    // Month View Events (August)
-    {
-      id: 9,
-      title: 'django developer',
-      description: '1st Round',
-      interviewer: 'Vinodini',
-      date: '2025-08-20',
-      startTime: '06:00 PM',
-      endTime: '07:00 PM'
-    },
-    {
-      id: 10,
       title: 'django developer',
       description: 'Test',
       interviewer: 'Vinodini',
-      date: '2025-08-27',
-      startTime: '06:00 PM',
-      endTime: '07:00 PM'
+      date: '2025-07-01',
+      startTime: '05:00 AM',
+      endTime: '08:00 AM'
     },
     {
-      id: 11,
+      id: 5,
       title: 'django developer',
-      description: 'Interviewer',
+      description: 'Test',
       interviewer: 'Vinodini',
-      date: '2025-08-29',
-      startTime: '06:00 PM',
-      endTime: '07:00 PM'
+      date: '2025-07-03',
+      startTime: '05:00 PM',
+      endTime: '06:00 PM'
     }
   ]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -141,19 +88,11 @@ const CalendarContainer = () => {
   };
 
   const handleViewChange = (view) => {
-    // Update current date based on view
-    switch(view) {
-      case 'day':
-        setCurrentDate(new Date('2025-08-29'));
-        break;
-      case 'week':
-        setCurrentDate(new Date('2025-03-05'));
-        break;
-      case 'month':
-        setCurrentDate(new Date('2025-08-01'));
-        break;
-    }
     setViewType(view);
+    // Keep the current date for day view
+    if (view === 'day') {
+      setCurrentDate(new Date());
+    }
   };
 
   const handleAddEvent = (newEvent) => {
@@ -175,6 +114,7 @@ const CalendarContainer = () => {
 
   return (
     <Container 
+      width="100%"
       maxWidth="xl" 
       sx={{ 
         py: 2,
@@ -187,14 +127,6 @@ const CalendarContainer = () => {
         flexDirection: 'column', 
         gap: 2 
       }}>
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          gutterBottom 
-          align="center"
-        >
-          Your Todo's
-        </Typography>
 
         <CalendarHeader 
           currentDate={currentDate}
@@ -220,21 +152,6 @@ const CalendarContainer = () => {
         />
       )}
 
-      <Fab 
-        color="primary" 
-        aria-label="add" 
-        sx={{
-          position: 'fixed',
-          bottom: theme.spacing(2),
-          right: theme.spacing(2),
-          ...(isMobile && {
-            transform: 'scale(0.8)',
-          }),
-        }}
-        onClick={() => setSelectedEvent({ date: currentDate })}
-      >
-        <AddIcon />
-      </Fab>
     </Container>
   );
 };
