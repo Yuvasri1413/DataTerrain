@@ -17,16 +17,45 @@ const CalendarContainer = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewType, setViewType] = useState('day');
   const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: 'django developer',
-      description: '1st Round',
-      interviewer: 'Vinodini',
-      date: '2025-06-29',
-      startTime: '05:00 AM',
-      endTime: '08:00 AM'
+    // {
+    //   id: 1,
+    //   title: 'django developer',
+    //   description: '1st Round',
+    //   interviewer: 'Vinodini',
+    //   date: '2025-06-29',
+    //   startTime: '05:00 AM',
+    //   endTime: '08:00 AM'
 
-    },
+    // },
+    // {
+    //   id: 2,
+    //   title: 'django developer',
+    //   description: '1st Round',
+    //   interviewer: 'Vinodini',
+    //   date: '2025-06-29',
+    //   startTime: '05:00 AM',
+    //   endTime: '08:00 AM'
+    // },
+    // {
+    //   id: 3,
+    //   title: 'django developer',
+    //   description: '1st Round',
+    //   interviewer: 'Vinodini',
+    //   date: '2025-06-30',
+    //   startTime: '06:00 AM',
+    //   endTime: '07:00 AM'
+    // },
+    // {
+    //   date: "2025-07-02",
+    //   description: "3rd Round",
+    //   endTime: "01:00 PM",
+    //   id: 4,
+    //   // interviewVia: "https://meet.google.com/landing",
+    //   interviewer: "Vinodhini",
+    //   startTime: "12:00 PM",
+    //   title: "django developer"
+    // }
+
   ]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 

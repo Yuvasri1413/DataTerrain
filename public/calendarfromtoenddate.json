@@ -2,7 +2,7 @@
     {
         "id": 1,
         "summary": "1st Round",
-        "desc": "1st Rounddddddddddddddddd",
+        "desc": "1st Round",
         "start": "2025-07-01T09:00:00+05:30",
         "end": "2025-07-01T10:00:00+05:30",
         "attendees": null,
@@ -52,7 +52,7 @@
     {
         "id": 2,
         "summary": "Test",
-        "desc": "Testdddddddddddddddddd",
+        "desc": "Test",
         "start": "2025-07-01T09:00:00+05:30",
         "end": "2025-07-01T10:00:00+05:30",
         "attendees": null,
@@ -153,8 +153,8 @@
         "id": 4,
         "summary": "3rd Round",
         "desc": "3rd Round",
-        "start": "2025-07-02T12:00:00+05:30",
-        "end": "2025-07-02T13:00:00+05:30",
+        "start": "2025-07-01T19:00:00+05:30",
+        "end": "2025-07-01T20:00:00+05:30",
         "attendees": null,
         "status": null,
         "comment": null,
@@ -180,6 +180,56 @@
                 "userEmail": "vinodhini_hr@dataterrain.com",
                 "username": "vinodhini_hr",
                 "firstName": "Vinodhini",
+                "lastName": "HR",
+                "userRole": "hr_employee"
+            },
+            "job_id": {
+                "id": 11,
+                "jobRequest_Title": "django developer",
+                "jobRequest_Role": "software engineer",
+                "jobRequest_KeySkills": "django",
+                "jobRequest_Description": "asfffasf"
+            }
+        },
+        "job_id": {
+            "id": 11,
+            "jobRequest_Title": "django developer",
+            "jobRequest_Role": "software engineer",
+            "jobRequest_KeySkills": "django",
+            "jobRequest_Description": "asfffasf"
+        }
+    },
+    {
+        "id": 5,
+        "summary": "3rd Round",
+        "desc": "3rd Round",
+        "start": "2025-07-02T19:00:00+05:30",
+        "end": "2025-07-02T20:00:00+05:30",
+        "attendees": null,
+        "status": null,
+        "comment": null,
+        "score": {
+            "o": 6
+        },
+            "link": "https://meet.google.com/landing",
+        "user_det": {
+            "id": 1,
+            "question_score": null,
+            "status": null,
+            "candidate": {
+                "id": 1,
+                "candidate_firstName": "mohan",
+                "candidate_lastName": "raj",
+                "candidateGender": "male",
+                "candidateComment": "",
+                "candidate_email": "mohanrajk@dataterrain.com"
+            },
+            "handled_by": {
+                "id": 3,
+                "last_login": null,
+                "userEmail": "vinodhini_hr@dataterrain.com",
+                "username": "vinodhini_hr",
+                "firstName": "Vinodhini5",
                 "lastName": "HR",
                 "userRole": "hr_employee"
             },

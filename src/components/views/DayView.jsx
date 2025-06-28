@@ -30,7 +30,14 @@ const DayView = ({
   const eventsByTime = dayEvents.reduce((acc, event) => {
     const eventHour = parseInt(event.startTime.split(':')[0]);
     const eventAmPm = event.startTime.split(' ')[1];
-    const hourKey = (eventAmPm === 'AM' ? eventHour : eventHour + 12);
+    
+    // Correct hour conversion for 12am and 12pm
+    let hourKey;
+    if (eventAmPm === 'AM') {
+      hourKey = eventHour === 12 ? 0 : eventHour;
+    } else { // PM
+      hourKey = eventHour === 12 ? 12 : eventHour + 12;
+    }
 
     // Create a unique key to identify duplicate events
     const eventKey = `${event.title}-${event.startTime}-${event.endTime}`;
@@ -97,7 +104,9 @@ const DayView = ({
                   fontWeight: 'medium'
                 }}
               >
-                {`${displayHour} ${amPm}`}
+                {hour === 0 ? '12 AM' : 
+                 hour === 12 ? '12 PM' : 
+                 hour < 12 ? `${hour} AM` : `${hour - 12} PM`}
               </Typography>
             </Grid>
 
