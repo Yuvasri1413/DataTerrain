@@ -15,7 +15,7 @@ import {
   Visibility as VisibilityIcon,
   Download as DownloadIcon
 } from '@mui/icons-material';
-import meetLogo from '../assets/meetlogo.png';
+import meetLogo from '../../assets/meetlogo.png';
 
 // Event Details Component
 const EventDetailsSection = ({ event, theme }) => {

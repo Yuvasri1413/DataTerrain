@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import { 
   Box, 
   Container, 
-  Typography, 
   useMediaQuery, 
   useTheme 
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-
 import CalendarHeader from './CalendarHeader';
 import CalendarView from './CalendarView';
-import EventModal from './EventModal';
-// import './CalendarContainer.css';
+import EventModal from './Events/EventModal';
 
 const CalendarContainer = () => {
   const theme = useTheme();
