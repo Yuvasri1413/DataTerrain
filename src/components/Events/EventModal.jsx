@@ -30,7 +30,7 @@ const EventDetailsSection = ({ event, theme }) => {
     }) : '29 Aug 2024',
     startTime: event?.startTime || '06:00 PM',
     endTime: event?.endTime || '06:40 PM',
-    interviewVia: event?.interviewVia || 'Google Meet'
+    interviewVia:'Google Meet' 
   };
 
   return (
@@ -108,6 +108,14 @@ const DocumentButtons = ({ event, theme }) => {
 
 // Meet Logo and Join Button Component
 const MeetSection = ({ event, theme }) => {
+  const handleJoinMeeting = () => {
+    if (event && event.link) {
+      window.open(event.link, '_blank', 'noopener,noreferrer');
+    } else {
+      alert('No meeting link available');
+    }
+  };
+
   return (
     <Box 
       sx={{ 
@@ -145,6 +153,7 @@ const MeetSection = ({ event, theme }) => {
       <Button
         variant="contained"
         color="primary"
+        onClick={handleJoinMeeting}
         sx={{
           textTransform: 'none',
           width: 'auto',

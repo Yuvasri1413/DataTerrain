@@ -83,7 +83,7 @@ const CalendarContainer = () => {
             minute: '2-digit', 
             hour12: true 
           }),
-          interviewVia: item.link
+          link: item.link
         }));
 
         console.log('Transformed Events:', transformedEvents);
