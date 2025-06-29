@@ -39,16 +39,16 @@ const DayView = ({
       hourKey = eventHour === 12 ? 12 : eventHour + 12;
     }
 
-    // Create a unique key to identify duplicate events
-    const eventKey = `${event.title}-${event.startTime}-${event.endTime}`;
+    // Create a unique key to identify events with the same start time
+    const eventKey = `${event.title}-${event.startTime}`;
 
     if (!acc[hourKey]) {
       acc[hourKey] = [];
     }
 
-    // Only add if this exact event is not already in the hour
+    // Only add if this event with the same start time is not already in the hour
     if (!acc[hourKey].some(e =>
-      `${e.title}-${e.startTime}-${e.endTime}` === eventKey
+      `${e.title}-${e.startTime}` === eventKey
     )) {
       acc[hourKey].push(event);
     }

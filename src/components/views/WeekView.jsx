@@ -184,8 +184,8 @@ const WeekView = ({
                     const eventHour = convertTo24HourFormat(event.startTime);
                     const isCorrectHour = eventHour === hour;
 
-                    // Create a unique key for the event
-                    const eventKey = `${event.title}-${event.interviewer}-${event.startTime}-${event.endTime}`;
+                    // Create a unique key for the event based only on start time
+                    const eventKey = `${event.title}-${event.startTime}`;
 
                     // Only include the event if it's on the same day, same hour, and not a duplicate
                     if (isSameDay && isCorrectHour && !uniqueEventKeys.has(eventKey)) {
