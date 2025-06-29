@@ -77,8 +77,10 @@ const YearPreview = ({ date, events, onEventClick, onEditEvent, onDeleteEvent })
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          marginTop: '30px',
+          marginTop: '40px',
           overflowY: 'auto',
+          position: 'relative',
+          height: '100%',
         }}
       >
         {sortedMonthEvents.length > 0 && (
@@ -87,12 +89,12 @@ const YearPreview = ({ date, events, onEventClick, onEditEvent, onDeleteEvent })
             currentDate={date}
             events={events}
             view="year"
-            onEventClick={(event, target) => {
-              if (sortedMonthEvents.length > 0) {
-                // Always show popover for month events
+            onEventClick={(event, target, similarEvents) => {
+              if (sortedMonthEvents.length > 1) {
+                // If multiple events, show popover
                 onEventClick(event, target, sortedMonthEvents);
               } else {
-                // If no events, open modal or handle event click
+                // If single event, directly open modal
                 onEventClick(event, target);
               }
             }}
@@ -149,10 +151,12 @@ const YearView = ({
   };
 
   const handleEventClick = (event, target, similarEvents) => {
-    if (similarEvents && similarEvents.length > 0) {
+    if (similarEvents && similarEvents.length > 1) {
+      // Multiple events, show popover
       setMultiEvents(similarEvents);
       setAnchorEl(target);
     } else {
+      // Single event, open modal directly
       setSelectedEvent(event);
       setIsModalOpen(true);
     }
