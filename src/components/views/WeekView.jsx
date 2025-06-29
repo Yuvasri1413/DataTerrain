@@ -90,6 +90,7 @@ const WeekView = ({
 
     return acc;
   }, {});
+  
 
   const handleEventClick = (event, target, similarEvents) => {
     if (similarEvents && similarEvents.length > 1) {

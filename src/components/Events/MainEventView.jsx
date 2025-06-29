@@ -13,7 +13,11 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
   return (
     <Box sx={{
       flex: 1,
-      p: {
+      p: isShortDuration ? {
+        xs: 0.3,
+        sm: 0.4,
+        md: 0.5
+      } : {
         xs: 0.5,
         sm: 0.75,
         md: 1
@@ -25,17 +29,18 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
       },
       display: 'flex',
       alignItems: 'flex-start',
-      justifyContent: 'flex-start',
+      justifyContent: isShortDuration ? 'space-between' : 'flex-start',
       flexDirection: 'column',
       overflow: 'hidden',
       width: 'auto',
+      height: '100%',
       minWidth: {
         xs: '125px',
         sm: '125px',
         md: '125px'
       },
       '@media (width: 1024px)': {
-        p: 0.5,
+        p: isShortDuration ? 0.3 : 0.5,
         pl: 0.75,
         minWidth: '110px',
         maxWidth: '120px'
@@ -43,6 +48,7 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
     }}>
       <Typography
         variant="subtitle2"
+        align="left"
         sx={{
           fontWeight: 'bold',
           fontSize: {
@@ -57,78 +63,63 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           width: '100%',
-          mb: 0.2
+          mb: isShortDuration ? 'auto' : 0.2,
+          lineHeight: isShortDuration ? 1.1 : 1.2,
+          textAlign: 'left'
         }}
       >
         {event?.title || 'Untitled Event'}
       </Typography>
 
-      {isShortDuration ? (
+      {!isShortDuration && (
         <Typography
-          variant="caption"
+          variant="body2"
           color="textSecondary"
+          align="left"
           sx={{
             fontSize: {
-              xs: '0.5rem',
-              sm: '0.55rem',
-              md: '0.65rem'
+              xs: '0.6rem',
+              sm: '0.65rem',
+              md: '0.75rem'
             },
             '@media (width: 1024px)': {
-              fontSize: '0.5rem'
+              fontSize: '0.6rem'
             },
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            width: '100%'
+            width: '100%',
+            mb: 0.2,
+            textAlign: 'left'
           }}
         >
-          {event?.startTime || 'Start Time'} - {event?.endTime || 'End Time'}
+          Interviewer: {event?.interviewer || 'Not Specified'}
         </Typography>
-      ) : (
-        <>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            sx={{
-              fontSize: {
-                xs: '0.6rem',
-                sm: '0.65rem',
-                md: '0.75rem'
-              },
-              '@media (width: 1024px)': {
-                fontSize: '0.6rem'
-              },
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              width: '100%',
-              mb: 0.2
-            }}
-          >
-            Interviewer: {event?.interviewer || 'Not Specified'}
-          </Typography>
-          <Typography
-            variant="caption"
-            color="textSecondary"
-            sx={{
-              fontSize: {
-                xs: '0.5rem',
-                sm: '0.55rem',
-                md: '0.65rem'
-              },
-              '@media (width: 1024px)': {
-                fontSize: '0.5rem'
-              },
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              width: '100%'
-            }}
-          >
-            {event?.startTime || 'Start Time'} - {event?.endTime || 'End Time'}
-          </Typography>
-        </>
       )}
+
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        align="left"
+        sx={{
+          fontSize: {
+            xs: '0.5rem',
+            sm: '0.55rem',
+            md: '0.65rem'
+          },
+          '@media (width: 1024px)': {
+            fontSize: '0.5rem'
+          },
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          width: '100%',
+          mt: 0,
+          textAlign: 'left'
+        }}
+      >
+        {event?.startTime || 'Start Time'} - {event?.endTime || 'End Time'}
+      </Typography>
     </Box>
   );
 };
