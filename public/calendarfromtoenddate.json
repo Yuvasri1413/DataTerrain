@@ -201,8 +201,8 @@
     },
     {
         "id": 5,
-        "summary": "4th Round",
-        "desc": "4th Round",
+        "summary": "1st Round",
+        "desc": "1st Round",
         "start": "2025-07-03T19:00:00+05:30",
         "end": "2025-07-03T20:00:00+05:30",
         "attendees": null,
@@ -250,9 +250,9 @@
         }
     },
     {
-        "id": 6 ,
-        "summary": "5th Round",
-        "desc": "5th Round",
+        "id": 6,
+        "summary": "2nd Round",
+        "desc": "2nd Round",
         "start": "2025-07-04T10:30:00+05:30",
         "end": "2025-07-04T11:00:00+05:30",
     "attendees": null,
@@ -300,9 +300,9 @@
     }
     },
     {
-        "id": 7 ,
-        "summary": "6th Round",
-        "desc": "6th Round",
+        "id": 7,
+        "summary": "3rd Round",
+        "desc": "3rd Round",
         "start": "2025-07-04T11:30:00+05:30",
         "end": "2025-07-04T12:00:00+05:30",
     "attendees": null,
@@ -351,8 +351,8 @@
     },
     {
         "id": 8,
-        "summary": "7th Round",
-        "desc": "7th Round",
+        "summary": "4th Round",
+        "desc": "4th Round",
         "start": "2025-08-04T12:30:00+05:30",
         "end": "2025-08-04T13:00:00+05:30",
         "attendees": null,
@@ -401,8 +401,8 @@
     },
     {
         "id": 9,
-        "summary": "7th Round",
-        "desc": "7th Round",
+        "summary": "1st Round",
+        "desc": "1st Round",
         "start": "2025-06-29T12:30:00+05:30",
         "end": "2025-06-29T13:30:00+05:30",
         "attendees": null,
@@ -451,8 +451,8 @@
     },
     {
         "id": 10,
-        "summary": "8th Round",
-        "desc": "8th Round",
+        "summary": "9th Round",
+        "desc": "9th Round",
         "start": "2025-06-01T12:30:00+05:30",
         "end": "2025-06-01T13:00:00+05:30",
         "attendees": null,
@@ -501,8 +501,8 @@
     },
     {
         "id": 10,
-        "summary": "8th Round",
-        "desc": "8th Round",
+        "summary": "10th Round",
+        "desc": "10th Round",
         "start": "2025-07-04T10:30:00+05:30",
         "end": "2025-07-04T11:00:00+05:30",
         "attendees": null,
@@ -551,8 +551,8 @@
     },
     {
         "id": 10,
-        "summary": "8th Round",
-        "desc": "8th Round",
+        "summary": "Final Round",
+        "desc": "Final Round",
         "start": "2025-07-07T01:10:00+05:30",
         "end": "2025-07-07T01:15:00+05:30",
         "attendees": null,

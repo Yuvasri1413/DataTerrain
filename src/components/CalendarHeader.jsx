@@ -5,9 +5,6 @@ import {
   Button,
   IconButton,
   useTheme,
-  Tabs,
-  Tab,
-  styled,
   useMediaQuery
 } from '@mui/material';
 import {
@@ -19,6 +16,7 @@ import {
   startOfWeek,
   endOfWeek
 } from 'date-fns';
+import { styles, StyledTabs, StyledTab } from './CalendarHeader.styles';
 
 // Function to add ordinal suffix to a number
 const addOrdinalSuffix = (number) => {
@@ -29,39 +27,6 @@ const addOrdinalSuffix = (number) => {
   if (j === 3 && k !== 13) return number + "rd";
   return number + "th";
 };
-
-const StyledTabs = styled(Tabs)(({ theme }) => ({
-  minHeight: 'auto',
-  width: '100%',
-  '& .MuiTabs-indicator': {
-    height: '3px',
-    backgroundColor: theme.palette.primary.main,
-    bottom: 0
-  },
-  [theme.breakpoints.down('sm')]: {
-    '& .MuiTabs-flexContainer': {
-      justifyContent: 'space-between'
-    }
-  }
-}));
-
-const StyledTab = styled(Tab)(({ theme }) => ({
-  textTransform: 'none',
-  minWidth: 60,
-  fontWeight: 500,
-  fontSize: '0.875rem',
-  color: theme.palette.text.secondary,
-  padding: theme.spacing(1, 2),
-  [theme.breakpoints.down('sm')]: {
-    minWidth: 'auto',
-    padding: theme.spacing(1, 1),
-    fontSize: '0.75rem'
-  },
-  '&.Mui-selected': {
-    color: theme.palette.primary.main,
-    fontWeight: 600
-  }
-}));
 
 const CalendarHeader = ({
   currentDate,
@@ -113,94 +78,36 @@ const CalendarHeader = ({
   return (
     <>
       {/* First Row: Create Schedule Button */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          padding: theme.spacing(1, 0)
-        }}
-      >
+      <Box sx={styles.createButtonContainer}>
         <Button
           color="primary"
-          sx={{
-            textTransform: 'none',
-            borderRadius: 2,
-            padding: theme.spacing(1, 2),
-            backgroundColor: 'white',
-            color: theme.palette.primary.main,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-            ...(isMobile && {
-              padding: theme.spacing(0.5, 1),
-              fontSize: '0.75rem'
-            })
-          }}
+          sx={styles.createButton(theme, isMobile)}
         >
           + Create Schedule
         </Button>
       </Box>
 
       {/* Second Row: Navigation and Tabs */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          alignItems: isMobile ? 'stretch' : 'center',
-          justifyContent: 'space-between',
-          gap: theme.spacing(2),
-          mb: theme.spacing(2),
-          width: '100%'
-        }}
-      >
+      <Box sx={styles.navigationContainer(theme, isMobile)}>
         {/* Date Navigation with Separate Buttons */}
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: isMobile ? '100%' : 'auto',
-          justifyContent: isMobile ? 'space-between' : 'flex-start'
-        }}>
+        <Box sx={styles.dateNavigation(isMobile)}>
           <IconButton
             onClick={() => onDateChange('prev')}
-            sx={{
-              color: theme.palette.text.primary,
-              backgroundColor: 'white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              mr: isMobile ? 0 : 1,
-              '&:hover': {
-                backgroundColor: theme.palette.grey[100],
-                boxShadow: '0 4px 6px rgba(0,0,0,0.15)'
-              }
-            }}
+            sx={styles.navigationButton(theme, isMobile)}
           >
             <ChevronLeftIcon />
           </IconButton>
 
           <IconButton
             onClick={() => onDateChange('next')}
-            sx={{
-              color: theme.palette.text.primary,
-              backgroundColor: 'white',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              ml: isMobile ? 0 : 1,
-              '&:hover': {
-                backgroundColor: theme.palette.grey[100],
-                boxShadow: '0 4px 6px rgba(0,0,0,0.15)'
-              }
-            }}
+            sx={styles.navigationButton(theme, isMobile, true)}
           >
             <ChevronRightIcon />
           </IconButton>
         </Box>
         <Typography
           variant="body1"
-          sx={{
-            mx: 2,
-            textAlign: 'center',
-            fontSize: '1.5 rem',
-            fontWeight: 'bold',
-            ...(isMobile && {
-              fontSize: '0.875rem'
-            })
-          }}
+          sx={styles.dateTitle(isMobile)}
         >
           {renderDateTitle()}
         </Typography>
@@ -209,10 +116,7 @@ const CalendarHeader = ({
           value={viewType}
           onChange={handleTabChange}
           aria-label="calendar view tabs"
-          sx={{
-            width: isMobile ? '100%' : 'auto',
-            marginTop: isMobile ? theme.spacing(1) : 0
-          }}
+          sx={styles.tabsContainer(theme, isMobile)}
         >
           <StyledTab value="day" label="Day" />
           <StyledTab value="week" label="Week" />

@@ -12,6 +12,7 @@ import {
 import CalendarHeader from './CalendarHeader';
 import CalendarView from './CalendarView';
 import EventModal from './Events/EventModal';
+import { styles } from './CalendarContainer.styles';
 
 const CalendarContainer = () => {
   const theme = useTheme();
@@ -102,37 +103,16 @@ const CalendarContainer = () => {
 
   if (isLoading) {
     return (
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '100vh',
-          flexDirection: 'column',
-          gap: 2
-        }}
-      >
+      <Box sx={styles.loadingContainer}>
         <CircularProgress size={60} />
-        <Box sx={{ color: 'text.secondary' }}>Loading calendar events...</Box>
+        <Box sx={styles.loadingText}>Loading calendar events...</Box>
       </Box>
     );
   }
 
   return (
-    <Container
-      width="100%"
-      maxWidth="xl"
-      sx={{
-        py: 2,
-        position: 'relative',
-        minHeight: '100vh',
-      }}
-    >
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2
-      }}>
+    <Container sx={styles.container}>
+      <Box sx={styles.contentBox}>
         <CalendarHeader
           currentDate={currentDate}
           viewType={viewType}
@@ -165,7 +145,7 @@ const CalendarContainer = () => {
           onClose={handleCloseError} 
           severity="error" 
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={styles.errorAlert}
         >
           {error}
         </Alert>

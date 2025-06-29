@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { Box, Popover, IconButton, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { Close as CloseIcon, EditOutlined as EditOutlinedIcon, DeleteOutlined as DeleteOutlinedIcon } from '@mui/icons-material';
-import { format, parseISO } from 'date-fns';
+import { Typography, useTheme, useMediaQuery } from '@mui/material';
+import { format } from 'date-fns';
 import { DayView, WeekView, MonthView, YearView } from './views';
-import './CalendarView.css';
 import MultiEventView from './Events/MultiEventView';
 import MultiEventPopover from './Events/MultiEventPopover';
+import {
+  CalendarView as StyledCalendarView,
+  HourRow,
+  HourLabel,
+  EventsContainer,
+  EventBox,
+  NoEvents
+} from './CalendarView.styles';
 
 const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -15,12 +21,10 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
   const handleEventClick = (event, target, eventsAtTime) => {
-    // Only show popover if there are multiple events at the same time
     if (eventsAtTime.length > 1) {
       setSelectedTimeEvents(eventsAtTime);
       setAnchorEl(target);
     } else {
-      // If only one event, directly select it
       onEventSelect(event);
     }
   };
@@ -62,7 +66,6 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
     }
   };
 
-  // Generate hours for the day view
   const generateHours = () => {
     return Array.from({ length: 24 }, (_, hour) => {
       const hourString = hour === 0 ? '12 AM' :
@@ -73,7 +76,6 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
     });
   };
 
-  // Filter events for the current date
   const filterEventsForCurrentDate = () => {
     const formattedDate = format(currentDate, 'yyyy-MM-dd');
     return events.filter(event =>
@@ -81,40 +83,18 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
     );
   };
 
-  // Render events for day view
   const renderDayEvents = () => {
     const dayEvents = filterEventsForCurrentDate();
 
     return generateHours().map((hourLabel, index) => (
-      <Box
-        key={hourLabel}
-        sx={{
-          display: 'flex',
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          minHeight: isMobile ? '40px' : '60px',
-          position: 'relative'
-        }}
-      >
-        <Typography
-          variant="caption"
-          sx={{
-            width: '60px',
-            padding: theme.spacing(1),
-            textAlign: 'right',
-            color: theme.palette.text.secondary,
-            fontSize: isMobile ? '0.7rem' : '0.8rem'
-          }}
-        >
-          {hourLabel}
-        </Typography>
+      <HourRow key={hourLabel} isMobile={isMobile}>
+        <HourLabel isMobile={isMobile}>
+          <Typography variant="caption">
+            {hourLabel}
+          </Typography>
+        </HourLabel>
 
-        <Box
-          sx={{
-            flex: 1,
-            position: 'relative',
-            borderLeft: `1px solid ${theme.palette.divider}`
-          }}
-        >
+        <EventsContainer>
           {dayEvents
             .filter(event => {
               const eventStartHour = parseInt(event.startTime.split(':')[0]);
@@ -123,45 +103,23 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
               return adjustedStartHour === index;
             })
             .map((event, eventIndex) => (
-              <Box
+              <EventBox
                 key={event.id}
                 onClick={() => onEventSelect(event)}
-                sx={{
-                  position: 'absolute',
-                  width: '100%',
-                  backgroundColor: theme.palette.primary.light,
-                  color: theme.palette.primary.contrastText,
-                  padding: theme.spacing(0.5),
-                  borderRadius: 1,
-                  cursor: 'pointer',
-                  fontSize: isMobile ? '0.7rem' : '0.8rem',
-                  top: `${eventIndex * 30}px`,
-                  zIndex: 10,
-                  '&:hover': {
-                    backgroundColor: theme.palette.primary.main,
-                  }
-                }}
+                isMobile={isMobile}
+                top={`${eventIndex * 30}px`}
               >
                 {event.title} - {event.startTime}
-              </Box>
+              </EventBox>
             ))
           }
-        </Box>
-      </Box>
+        </EventsContainer>
+      </HourRow>
     ));
   };
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        ...sx
-      }}
-    >
+    <StyledCalendarView sx={sx}>
       {renderView()}
 
       <MultiEventPopover
@@ -176,18 +134,16 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
             onEventSelect={onEventSelect}
             onClose={handlePopoverClose}
             onEdit={(event) => {
-              // Implement edit logic
               console.log('Edit event', event);
             }}
             onDelete={(event) => {
-              // Implement delete logic
               console.log('Delete event', event);
             }}
           />
         )}
       </MultiEventPopover>
-    </Box>
+    </StyledCalendarView>
   );
 };
 
-export default CalendarView; 
+export default CalendarView;
