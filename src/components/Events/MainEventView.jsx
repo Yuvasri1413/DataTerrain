@@ -122,6 +122,8 @@ const MainEventView = ({
         const similarEvents = events.filter(
           view === 'month' 
             ? ev => format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+            : view === 'year'
+            ? ev => format(parseISO(ev.date), 'yyyy-MM') === format(currentDate, 'yyyy-MM')
             : ev => ev.startTime === event.startTime && 
                     format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
         );
@@ -130,8 +132,10 @@ const MainEventView = ({
     >
       {(() => {
         const similarEventsCount = events.filter(
-          view === 'month'
+          view === 'month' 
             ? ev => format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+            : view === 'year'
+            ? ev => format(parseISO(ev.date), 'yyyy-MM') === format(currentDate, 'yyyy-MM')
             : ev => ev.startTime === event.startTime && 
                     format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
         ).length;

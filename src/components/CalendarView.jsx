@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Popover, IconButton, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { Close as CloseIcon, EditOutlined as EditOutlinedIcon, DeleteOutlined as DeleteOutlinedIcon } from '@mui/icons-material';
 import { format, parseISO } from 'date-fns';
-import { DayView, WeekView, MonthView } from './views';
+import { DayView, WeekView, MonthView, YearView } from './views';
 import './CalendarView.css';
 import MultiEventView from './Events/MultiEventView';
 import MultiEventPopover from './Events/MultiEventPopover';
@@ -35,29 +35,29 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
 
   const renderView = () => {
     switch (viewType) {
-      case 'day': 
-        return <DayView 
-          currentDate={currentDate} 
-          events={events} 
-          onEventClick={handleEventClick} 
+      case 'day':
+        return <DayView
+          currentDate={currentDate}
+          events={events}
+          onEventClick={handleEventClick}
         />;
-      case 'week': 
-        return <WeekView 
-          currentDate={currentDate} 
-          events={events} 
-          onEventClick={handleEventClick} 
+      case 'week':
+        return <WeekView
+          currentDate={currentDate}
+          events={events}
+          onEventClick={handleEventClick}
         />;
-      case 'month': 
-        return <MonthView 
-          currentDate={currentDate} 
-          events={events} 
-          onEventClick={handleEventClick} 
+      case 'month':
+        return <MonthView
+          currentDate={currentDate}
+          events={events}
+          onEventClick={handleEventClick}
         />;
-      default: 
-        return <DayView 
-          currentDate={currentDate} 
-          events={events} 
-          onEventClick={handleEventClick} 
+      case 'year':
+        return <YearView
+          currentDate={currentDate}
+          events={events}
+          onEventClick={handleEventClick}
         />;
     }
   };
@@ -65,10 +65,10 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
   // Generate hours for the day view
   const generateHours = () => {
     return Array.from({ length: 24 }, (_, hour) => {
-      const hourString = hour === 0 ? '12 AM' : 
-                         hour < 12 ? `${hour} AM` : 
-                         hour === 12 ? '12 PM' : 
-                         `${hour - 12} PM`;
+      const hourString = hour === 0 ? '12 AM' :
+        hour < 12 ? `${hour} AM` :
+          hour === 12 ? '12 PM' :
+            `${hour - 12} PM`;
       return hourString;
     });
   };
@@ -76,7 +76,7 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
   // Filter events for the current date
   const filterEventsForCurrentDate = () => {
     const formattedDate = format(currentDate, 'yyyy-MM-dd');
-    return events.filter(event => 
+    return events.filter(event =>
       event.date === formattedDate
     );
   };
@@ -84,21 +84,21 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
   // Render events for day view
   const renderDayEvents = () => {
     const dayEvents = filterEventsForCurrentDate();
-    
+
     return generateHours().map((hourLabel, index) => (
-      <Box 
-        key={hourLabel} 
-        sx={{ 
-          display: 'flex', 
+      <Box
+        key={hourLabel}
+        sx={{
+          display: 'flex',
           borderBottom: `1px solid ${theme.palette.divider}`,
           minHeight: isMobile ? '40px' : '60px',
           position: 'relative'
         }}
       >
-        <Typography 
-          variant="caption" 
-          sx={{ 
-            width: '60px', 
+        <Typography
+          variant="caption"
+          sx={{
+            width: '60px',
             padding: theme.spacing(1),
             textAlign: 'right',
             color: theme.palette.text.secondary,
@@ -107,10 +107,10 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
         >
           {hourLabel}
         </Typography>
-        
-        <Box 
-          sx={{ 
-            flex: 1, 
+
+        <Box
+          sx={{
+            flex: 1,
             position: 'relative',
             borderLeft: `1px solid ${theme.palette.divider}`
           }}
@@ -123,7 +123,7 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
               return adjustedStartHour === index;
             })
             .map((event, eventIndex) => (
-              <Box 
+              <Box
                 key={event.id}
                 onClick={() => onEventSelect(event)}
                 sx={{
@@ -152,7 +152,7 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
   };
 
   return (
-    <Box 
+    <Box
       sx={{
         width: '100%',
         height: '100%',
@@ -171,7 +171,7 @@ const CalendarView = ({ currentDate, viewType, events, onEventSelect, sx }) => {
         handlePopoverClose={handlePopoverClose}
       >
         {selectedTimeEvents.length > 0 && (
-          <MultiEventView 
+          <MultiEventView
             events={selectedTimeEvents}
             onEventSelect={onEventSelect}
             onClose={handlePopoverClose}
