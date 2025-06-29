@@ -4,7 +4,10 @@ import {
   Container,
   ListItem,
   useMediaQuery,
-  useTheme
+  useTheme,
+  CircularProgress,
+  Alert,
+  Snackbar
 } from '@mui/material';
 import CalendarHeader from './CalendarHeader';
 import CalendarView from './CalendarView';
@@ -18,13 +21,21 @@ const CalendarContainer = () => {
   const [viewType, setViewType] = useState('day');
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const response = await fetch('/calendarfromtoenddate.json');
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch events: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
-        console.log('Fetched Events:', data);
 
         // Transform the fetched data to match the existing events structure
         const transformedEvents = data.map(item => ({
@@ -46,10 +57,12 @@ const CalendarContainer = () => {
           link: item.link
         }));
 
-        console.log('Transformed Events:', transformedEvents);
         setEvents(transformedEvents);
       } catch (error) {
         console.error('Error fetching events:', error);
+        setError(error.message || 'Failed to fetch calendar events');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -83,6 +96,28 @@ const CalendarContainer = () => {
     }
   };
 
+  const handleCloseError = () => {
+    setError(null);
+  };
+
+  if (isLoading) {
+    return (
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '100vh',
+          flexDirection: 'column',
+          gap: 2
+        }}
+      >
+        <CircularProgress size={60} />
+        <Box sx={{ color: 'text.secondary' }}>Loading calendar events...</Box>
+      </Box>
+    );
+  }
+
   return (
     <Container
       width="100%"
@@ -98,7 +133,6 @@ const CalendarContainer = () => {
         flexDirection: 'column',
         gap: 2
       }}>
-
         <CalendarHeader
           currentDate={currentDate}
           viewType={viewType}
@@ -121,6 +155,21 @@ const CalendarContainer = () => {
         />
       )}
 
+      <Snackbar 
+        open={!!error} 
+        autoHideDuration={6000} 
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleCloseError} 
+          severity="error" 
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

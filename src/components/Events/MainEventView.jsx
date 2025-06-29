@@ -6,7 +6,8 @@ import {
   Badge,
   useTheme
 } from '@mui/material';
-import { format, parseISO, parse, differenceInMinutes } from 'date-fns';
+import { format, parseISO } from 'date-fns';
+import { styles } from './MainEventView.styles';
 
 const MainEventCard = ({ event, events, view, isShortDuration }) => {
   return (
@@ -52,17 +53,38 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
           '@media (width: 1024px)': {
             fontSize: '0.7rem',
           },
-          wordBreak: 'break-word',
-          mb: isShortDuration ? 0 : {
-            xs: 0.2,
-            sm: 0.25,
-            md: 0.3
-          }
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          width: '100%',
+          mb: 0.2
         }}
       >
         {event?.title || 'Untitled Event'}
       </Typography>
-      {!isShortDuration && (
+
+      {isShortDuration ? (
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          sx={{
+            fontSize: {
+              xs: '0.5rem',
+              sm: '0.55rem',
+              md: '0.65rem'
+            },
+            '@media (width: 1024px)': {
+              fontSize: '0.5rem'
+            },
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            width: '100%'
+          }}
+        >
+          {event?.startTime || 'Start Time'} - {event?.endTime || 'End Time'}
+        </Typography>
+      ) : (
         <>
           <Typography
             variant="body2"
@@ -76,12 +98,11 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
               '@media (width: 1024px)': {
                 fontSize: '0.6rem'
               },
-              wordBreak: 'break-word',
-              mb: {
-                xs: 0.15,
-                sm: 0.2,
-                md: 0.25
-              }
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              width: '100%',
+              mb: 0.2
             }}
           >
             Interviewer: {event?.interviewer || 'Not Specified'}
@@ -98,7 +119,10 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
               '@media (width: 1024px)': {
                 fontSize: '0.5rem'
               },
-              wordBreak: 'break-word'
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              width: '100%'
             }}
           >
             {event?.startTime || 'Start Time'} - {event?.endTime || 'End Time'}
@@ -136,6 +160,10 @@ const MainEventView = ({
         position: 'relative',
         transition: 'all 0.3s ease',
         borderLeft: '10px solid #1976d2',
+        cursor: 'pointer',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        msUserSelect: 'none',
       }}
       onClick={(e) => {
         const similarEvents = events.filter(

@@ -20,6 +20,16 @@ import {
   endOfWeek
 } from 'date-fns';
 
+// Function to add ordinal suffix to a number
+const addOrdinalSuffix = (number) => {
+  const j = number % 10;
+  const k = number % 100;
+  if (j === 1 && k !== 11) return number + "st";
+  if (j === 2 && k !== 12) return number + "nd";
+  if (j === 3 && k !== 13) return number + "rd";
+  return number + "th";
+};
+
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   minHeight: 'auto',
   width: '100%',
@@ -66,18 +76,32 @@ const CalendarHeader = ({
   // Render date title based on view type
   const renderDateTitle = () => {
     switch (viewType) {
-      case 'day':
-        return format(currentDate, 'MMMM d, yyyy');
-      case 'week':
+      case 'day': {
+        const day = addOrdinalSuffix(currentDate.getDate());
+        const month = format(currentDate, 'MMMM');
+        const year = format(currentDate, 'yyyy');
+        return `${day} ${month} ${year}`;
+      }
+      case 'week': {
         const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
         const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
-        return `${format(weekStart, 'MMMM d')} to ${format(weekEnd, 'MMMM d, yyyy')}`;
+        const startDay = addOrdinalSuffix(weekStart.getDate());
+        const endDay = addOrdinalSuffix(weekEnd.getDate());
+        const startMonth = format(weekStart, 'MMMM');
+        const endMonth = format(weekEnd, 'MMMM');
+        const year = format(weekEnd, 'yyyy');
+        return `${startDay} ${startMonth} to ${endDay} ${endMonth} ${year}`;
+      }
       case 'month':
         return format(currentDate, 'MMMM yyyy');
       case 'year':
         return format(currentDate, 'yyyy');
-      default:
-        return format(currentDate, 'MMMM d, yyyy');
+      default: {
+        const day = addOrdinalSuffix(currentDate.getDate());
+        const month = format(currentDate, 'MMMM');
+        const year = format(currentDate, 'yyyy');
+        return `${day} ${month} ${year}`;
+      }
     }
   };
 
@@ -120,10 +144,11 @@ const CalendarHeader = ({
         sx={{
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',
-          alignItems: 'center',
+          alignItems: isMobile ? 'stretch' : 'center',
           justifyContent: 'space-between',
-          gap: theme.spacing(1),
-          padding: theme.spacing(1, 0),
+          gap: theme.spacing(2),
+          mb: theme.spacing(2),
+          width: '100%'
         }}
       >
         {/* Date Navigation with Separate Buttons */}
@@ -170,8 +195,9 @@ const CalendarHeader = ({
           sx={{
             mx: 2,
             textAlign: 'center',
-            fontSize: '1 rem',
-              ...(isMobile && {
+            fontSize: '1.5 rem',
+            fontWeight: 'bold',
+            ...(isMobile && {
               fontSize: '0.875rem'
             })
           }}
