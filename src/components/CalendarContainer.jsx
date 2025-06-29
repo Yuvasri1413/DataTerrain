@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Container, 
-  ListItem, 
-  useMediaQuery, 
-  useTheme 
+import {
+  Box,
+  Container,
+  ListItem,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import CalendarHeader from './CalendarHeader';
 import CalendarView from './CalendarView';
@@ -16,47 +16,7 @@ const CalendarContainer = () => {
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewType, setViewType] = useState('day');
-  const [events, setEvents] = useState([
-    // {
-    //   id: 1,
-    //   title: 'django developer',
-    //   description: '1st Round',
-    //   interviewer: 'Vinodini',
-    //   date: '2025-06-29',
-    //   startTime: '05:00 AM',
-    //   endTime: '08:00 AM'
-
-    // },
-    // {
-    //   id: 2,
-    //   title: 'django developer',
-    //   description: '1st Round',
-    //   interviewer: 'Vinodini',
-    //   date: '2025-06-29',
-    //   startTime: '05:00 AM',
-    //   endTime: '08:00 AM'
-    // },
-    // {
-    //   id: 3,
-    //   title: 'django developer',
-    //   description: '1st Round',
-    //   interviewer: 'Vinodini',
-    //   date: '2025-06-30',
-    //   startTime: '06:00 AM',
-    //   endTime: '07:00 AM'
-    // },
-    // {
-    //   date: "2025-07-02",
-    //   description: "3rd Round",
-    //   endTime: "01:00 PM",
-    //   id: 4,
-    //   // interviewVia: "https://meet.google.com/landing",
-    //   interviewer: "Vinodhini",
-    //   startTime: "12:00 PM",
-    //   title: "django developer"
-    // }
-
-  ]);
+  const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -73,15 +33,15 @@ const CalendarContainer = () => {
           description: item.desc,
           interviewer: item.user_det.handled_by.firstName,
           date: item.start.split('T')[0],
-          startTime: new Date(item.start).toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            hour12: true 
+          startTime: new Date(item.start).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
           }),
-          endTime: new Date(item.end).toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            hour12: true 
+          endTime: new Date(item.end).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
           }),
           link: item.link
         }));
@@ -98,7 +58,7 @@ const CalendarContainer = () => {
 
   const handleDateChange = (direction) => {
     const newDate = new Date(currentDate);
-    switch(viewType) {
+    switch (viewType) {
       case 'day':
         newDate.setDate(newDate.getDate() + (direction === 'next' ? 1 : -1));
         break;
@@ -124,29 +84,29 @@ const CalendarContainer = () => {
   };
 
   return (
-    <Container 
+    <Container
       width="100%"
-      maxWidth="xl" 
-      sx={{ 
+      maxWidth="xl"
+      sx={{
         py: 2,
         position: 'relative',
         minHeight: '100vh',
       }}
     >
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: 2 
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
       }}>
 
-        <CalendarHeader 
+        <CalendarHeader
           currentDate={currentDate}
           viewType={viewType}
           onDateChange={handleDateChange}
           onViewChange={handleViewChange}
         />
 
-        <CalendarView 
+        <CalendarView
           currentDate={currentDate}
           viewType={viewType}
           events={events}
@@ -155,7 +115,7 @@ const CalendarContainer = () => {
       </Box>
 
       {selectedEvent !== null && (
-        <EventModal 
+        <EventModal
           event={selectedEvent}
           onClose={() => setSelectedEvent(null)}
         />

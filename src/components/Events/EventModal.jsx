@@ -8,7 +8,6 @@ import {
   useTheme,
   Typography,
   Grid,
-  Divider
 } from '@mui/material';
 import { 
   Close as CloseIcon, 
@@ -16,6 +15,7 @@ import {
   Download as DownloadIcon
 } from '@mui/icons-material';
 import meetLogo from '../../assets/meetlogo.png';
+import { styles } from './EventModal.styles';
 
 // Event Details Component
 const EventDetailsSection = ({ event, theme }) => {
@@ -34,12 +34,7 @@ const EventDetailsSection = ({ event, theme }) => {
   };
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: theme.spacing(1)
-    }}>
+    <Box sx={styles.eventDetailsContainer(theme)}>
       {[
         { label: 'Interview With', value: eventDetails.interviewer },
         { label: 'Position', value: eventDetails.position },
@@ -51,10 +46,7 @@ const EventDetailsSection = ({ event, theme }) => {
         <Typography 
           key={label} 
           variant="body2"
-          sx={{
-            fontSize: '0.8rem',
-            lineHeight: 1.5
-          }}
+          sx={styles.eventDetailsText}
         >
           {label}: {value}
         </Typography>
@@ -71,12 +63,7 @@ const DocumentButtons = ({ event, theme }) => {
   ];
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: theme.spacing(1),
-      mt: theme.spacing(2)
-    }}>
+    <Box sx={styles.documentButtonsContainer(theme)}>
       {documentTypes.map(({ label, viewIcon, downloadIcon }) => (
         <Button
           key={label}
@@ -88,16 +75,7 @@ const DocumentButtons = ({ event, theme }) => {
             </>
           }
           fullWidth
-          sx={{
-            textTransform: 'none',
-            borderColor: theme.palette.primary.dark,
-            color: theme.palette.primary.dark,
-            justifyContent: 'space-between',
-            '& .MuiButton-endIcon': {
-              display: 'flex',
-              gap: theme.spacing(1)
-            }
-          }}
+          sx={styles.documentButton(theme)}
         >
           {label}
         </Button>
@@ -117,52 +95,19 @@ const MeetSection = ({ event, theme }) => {
   };
 
   return (
-    <Box 
-      sx={{ 
-        width: '100%', 
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: theme.spacing(2)
-      }}
-    >
-      <Box 
-        sx={{ 
-          width: '100%', 
-          height: 64, 
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+    <Box sx={styles.meetSectionContainer(theme)}>
+      <Box sx={styles.meetLogoContainer}>
         <img 
           src={meetLogo} 
           alt="Google Meet" 
-          style={{ 
-            width: '100%', 
-            maxWidth: 64,
-            height: '100%', 
-            objectFit: 'contain',
-            transition: 'transform 0.3s ease-in-out',
-            transform: 'scale(2)',
-          }} 
+          style={styles.meetLogo}
         />
       </Box>
       <Button
         variant="contained"
         color="primary"
         onClick={handleJoinMeeting}
-        sx={{
-          textTransform: 'none',
-          width: 'auto',
-          minWidth: '120px',
-          backgroundColor: '#006DBF',
-          '&:hover': {
-            backgroundColor: '#005299' // slightly darker shade for hover effect
-          }
-        }}
+        sx={styles.joinButton}
       >
         JOIN
       </Button>
@@ -183,7 +128,6 @@ const EventModal = ({ event, onEdit, onDelete, onClose }) => {
   });
 
   useEffect(() => {
-    // Initialize form with existing event or default values
     if (event) {
       setEditedEvent({
         ...event,
@@ -203,7 +147,6 @@ const EventModal = ({ event, onEdit, onDelete, onClose }) => {
   };
 
   const handleSave = () => {
-    // Validate and save event
     if (!editedEvent.title) {
       alert('Please enter a title');
       return;
@@ -219,80 +162,35 @@ const EventModal = ({ event, onEdit, onDelete, onClose }) => {
   return (
     <Box>
       <Dialog 
-      open={true} 
-      onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
-          position: 'relative',
-          overflow: 'visible',
-          padding: '20px',
-          width: '500px',
-          maxWidth: '90%',
-          margin: '0 auto'
-        }
-      }}
-    >
-      <IconButton 
-        onClick={onClose} 
-        sx={{ 
-          position: 'absolute',
-          top: -10,
-          right: -10,
-          color: 'white',
-          backgroundColor: '#006DBF',
-          width: theme.spacing(3),
-          height: theme.spacing(3),
-          borderRadius: '50%',
-          '& svg': {
-            width: theme.spacing(2),
-            height: theme.spacing(2)
-          },
-          '&:hover': {
-            backgroundColor: '#005299'
-          },
-          zIndex: 10
+        open={true} 
+        onClose={onClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: styles.modalPaper(theme)
         }}
       >
-        <CloseIcon />
-      </IconButton>
-      <DialogContent 
-        sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: theme.spacing(2),
-          padding: theme.spacing(2.5),
-          paddingTop: theme.spacing(1),
-          paddingBottom: theme.spacing(2),
-          border: '1px solid gray'
-        }}
-      >
-        <Grid container spacing={2} sx={{
-          flexWrap: { xs: 'wrap', md: 'nowrap' }
-        }}>
-          {/* First Column - Event Details */}
-          <Grid item xs={12} md={6} sx={{
-            pr: { md: 2 },
-            borderRight: { md: `1px solid ${theme.palette.divider}`}
-          }}>
-            <EventDetailsSection event={event} theme={theme} />
-            <DocumentButtons event={event} theme={theme} />
+        <IconButton 
+          onClick={onClose} 
+          sx={styles.closeButton(theme)}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent sx={styles.dialogContent(theme)}>
+          <Grid container spacing={2} sx={styles.gridContainer}>
+            {/* First Column - Event Details */}
+            <Grid item xs={12} md={6} sx={styles.firstGridItem(theme)}>
+              <EventDetailsSection event={event} theme={theme} />
+              <DocumentButtons event={event} theme={theme} />
+            </Grid>
+
+            {/* Second Column - Meet Logo and JOIN Button */}
+            <Grid item xs={12} md={6} sx={styles.secondGridItem}>
+              <MeetSection event={event} theme={theme} />
+            </Grid>
           </Grid>
-<></>
-          {/* Second Column - Meet Logo and JOIN Button */}
-          <Grid item xs={12} md={6} sx={{
-            mt: { xs: 2, md: 0 },
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}>
-            <MeetSection event={event} theme={theme} />
-          </Grid>
-        </Grid>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
