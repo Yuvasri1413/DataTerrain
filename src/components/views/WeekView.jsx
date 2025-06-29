@@ -13,7 +13,10 @@ import {
   addDays,
   isWithinInterval,
   startOfDay,
-  endOfDay
+  endOfDay,
+  parse,
+  differenceInMinutes,
+  max
 } from 'date-fns';
 import MainEventView from '../Events/MainEventView';
 import MultiEventView from '../Events/MultiEventView';
@@ -32,46 +35,58 @@ const WeekView = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [multiEvents, setMultiEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const HOUR_HEIGHT = 100; // Height of each hour row in pixels
+  const EVENT_WIDTH = 200; // Fixed width for event cards
 
   // Calculate week start and days
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-  // Helper function to convert time to 24-hour format for consistent comparison
-  const convertTo24HourFormat = (timeStr) => {
-    if (!timeStr) return null;
+  // Process events for each day
+  const processedEventsByDay = weekDays.reduce((acc, day) => {
+    const dayKey = format(day, 'yyyy-MM-dd');
     
-    // Remove spaces and convert to uppercase
-    const cleanedTime = timeStr.replace(/\s/g, '').toUpperCase();
-    
-    // Parse hours and period
-    const match = cleanedTime.match(/(\d+):?(\d*)(AM|PM)?/);
-    if (!match) return null;
-    
-    let [, hours, minutes, period] = match;
-    hours = parseInt(hours, 10);
-    minutes = minutes ? parseInt(minutes, 10) : 0;
-    
-    // Adjust hours for PM
-    if (period === 'PM' && hours !== 12) {
-      hours += 12;
-    }
-    // Adjust hours for 12 AM
-    if (period === 'AM' && hours === 12) {
-      hours = 0;
-    }
-    
-    return hours;
-  };
+    // Group events by start time for this day
+    const groupedEvents = events
+      .filter(event => format(parseISO(event.date), 'yyyy-MM-dd') === dayKey)
+      .reduce((groups, event) => {
+        const startDateTime = parse(event.startTime, 'h:mm a', new Date());
+        const startTimeKey = format(startDateTime, 'HH:mm');
+        
+        if (!groups[startTimeKey]) {
+          groups[startTimeKey] = {
+            events: [],
+            startHour: startDateTime.getHours(),
+            startMinutes: startDateTime.getMinutes(),
+            maxEndDateTime: parse(event.endTime, 'h:mm a', new Date())
+          };
+        }
+        
+        const endDateTime = parse(event.endTime, 'h:mm a', new Date());
+        groups[startTimeKey].events.push(event);
+        groups[startTimeKey].maxEndDateTime = max([groups[startTimeKey].maxEndDateTime, endDateTime]);
+        
+        return groups;
+      }, {});
 
-  // Helper function to format hour display
-  const formatHourDisplay = (hour) => {
-    if (hour === 0) return '12 AM';
-    if (hour === 12) return '12 PM';
-    return hour > 12 
-      ? `${hour - 12} PM` 
-      : `${hour} AM`;
-  };
+    // Convert grouped events to positioned events
+    acc[dayKey] = Object.values(groupedEvents).map(group => {
+      const durationMinutes = differenceInMinutes(group.maxEndDateTime, 
+        new Date().setHours(group.startHour, group.startMinutes));
+
+      return {
+        ...group.events[0],
+        allEvents: group.events,
+        startHour: group.startHour,
+        startMinutes: group.startMinutes,
+        top: group.startMinutes / 60 * HOUR_HEIGHT,
+        height: Math.max((durationMinutes / 60) * HOUR_HEIGHT, 40), // Minimum height of 40px
+        durationMinutes
+      };
+    });
+
+    return acc;
+  }, {});
 
   const handleEventClick = (event, target, similarEvents) => {
     if (similarEvents && similarEvents.length > 1) {
@@ -126,7 +141,8 @@ const WeekView = ({
           key={hour}
           sx={{
             borderBottom: `1px solid ${theme.palette.divider}`,
-            minHeight: '100px'
+            height: `${HOUR_HEIGHT}px`,
+            position: 'relative'
           }}
         >
           {/* Time Column */}
@@ -135,81 +151,61 @@ const WeekView = ({
             xs={2}
             sx={{
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              paddingTop: '8px'
             }}
           >
             <Typography variant="body2">
-              {formatHourDisplay(hour)}
+              {hour === 0 ? '12 AM' : 
+               hour === 12 ? '12 PM' : 
+               hour < 12 ? `${hour} AM` : `${hour - 12} PM`}
             </Typography>
           </Grid>
 
           {/* Days Columns */}
-          {weekDays.map((day) => (
-            <Grid
-              item
-              xs
-              key={day.toISOString()}
-              sx={{
-                position: 'relative',
-                minHeight: '100px',
-                borderLeft: `1px solid ${theme.palette.divider}`,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center', 
-                padding: '10px',
-              }}
-            >
-              {(() => {
-                // Create a Set to track unique events
-                const uniqueEventKeys = new Set();
+          {weekDays.map((day) => {
+            const dayKey = format(day, 'yyyy-MM-dd');
+            const dayEvents = processedEventsByDay[dayKey] || [];
+            const hourEvents = dayEvents.filter(event => event.startHour === hour);
 
-                // Filter events for this day and hour
-                const filteredEvents = events
-                  .filter((event) => {
-                    // Try parsing the date from different possible formats
-                    let eventDate;
-                    try {
-                      // First try parsing the date directly
-                      eventDate = parseISO(event.date);
-                    } catch {
-                      // If that fails, try creating a date from the input
-                      eventDate = new Date(event.date);
-                    }
-
-                    // Check if the event date is the same as the current day
-                    const isSameDay = format(eventDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd');
-                    
-                    // Check if the event's hour matches the current hour
-                    const eventHour = convertTo24HourFormat(event.startTime);
-                    const isCorrectHour = eventHour === hour;
-
-                    // Create a unique key for the event based only on start time
-                    const eventKey = `${event.title}-${event.startTime}`;
-
-                    // Only include the event if it's on the same day, same hour, and not a duplicate
-                    if (isSameDay && isCorrectHour && !uniqueEventKeys.has(eventKey)) {
-                      uniqueEventKeys.add(eventKey);
-                      return true;
-                    }
-                    return false;
-                  })
-                  .map((event, index) => (
+            return (
+              <Grid
+                item
+                xs
+                key={day.toISOString()}
+                sx={{
+                  position: 'relative',
+                  height: '100%',
+                  borderLeft: `1px solid ${theme.palette.divider}`
+                }}
+              >
+                {hourEvents.map((event) => (
+                  <Box
+                    key={event.id}
+                    sx={{
+                      position: 'absolute',
+                      top: event.top,
+                      height: event.height,
+                      left: '8px',
+                      right: '8px',
+                      maxWidth: EVENT_WIDTH,
+                      zIndex: 1
+                    }}
+                  >
                     <MainEventView
-                      key={`${event.id}-${index}`}
                       event={event}
                       currentDate={day}
-                      events={events}
-                      onEventClick={(event, target, similarEvents) => 
-                        handleEventClick(event, target, similarEvents)
-                      }
+                      events={event.allEvents}
+                      onEventClick={handleEventClick}
+                      view="week"
+                      duration={event.durationMinutes}
                     />
-                  ));
-
-                return filteredEvents;
-              })()}
-            </Grid>
-          ))}
+                  </Box>
+                ))}
+              </Grid>
+            );
+          })}
         </Grid>
       ))}
 
