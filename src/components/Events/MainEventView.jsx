@@ -32,6 +32,12 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
         xs: '125px',
         sm: '125px',
         md: '125px'
+      },
+      '@media (width: 1024px)': {
+        p: 0.5,
+        pl: 0.75,
+        minWidth: '110px',
+        maxWidth: '120px'
       }
     }}>
       <Typography
@@ -39,9 +45,12 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
         sx={{
           fontWeight: 'bold',
           fontSize: {
-            xs: '0.65rem',
+            xs: '0.6rem',
             sm: '0.75rem',
             md: '0.85rem'
+          },
+          '@media (width: 1024px)': {
+            fontSize: '0.7rem',
           },
           wordBreak: 'break-word',
           mb: isShortDuration ? 0 : {
@@ -60,9 +69,12 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
             color="textSecondary"
             sx={{
               fontSize: {
-                xs: '0.55rem',
+                xs: '0.6rem',
                 sm: '0.65rem',
                 md: '0.75rem'
+              },
+              '@media (width: 1024px)': {
+                fontSize: '0.6rem'
               },
               wordBreak: 'break-word',
               mb: {
@@ -79,9 +91,12 @@ const MainEventCard = ({ event, events, view, isShortDuration }) => {
             color="textSecondary"
             sx={{
               fontSize: {
-                xs: '0.45rem',
+                xs: '0.5rem',
                 sm: '0.55rem',
                 md: '0.65rem'
+              },
+              '@media (width: 1024px)': {
+                fontSize: '0.5rem'
               },
               wordBreak: 'break-word'
             }}

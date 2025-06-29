@@ -4,7 +4,8 @@ import {
   Typography, 
   Paper, 
   Grid,
-  useTheme 
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import { 
   format, 
@@ -31,12 +32,14 @@ const WeekView = ({
   onDeleteEvent
 }) => {
   const theme = useTheme();
+  const is1024Screen = useMediaQuery('(width: 1024px)');
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [multiEvents, setMultiEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const HOUR_HEIGHT = 100; // Height of each hour row in pixels
-  const EVENT_WIDTH = 200; // Fixed width for event cards
+  const HOUR_HEIGHT = is1024Screen ? 65 : isTablet ? 70 : 100;
+  const EVENT_WIDTH = is1024Screen ? 130 : isTablet ? '100%' : 200;
 
   // Calculate week start and days
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -115,24 +118,66 @@ const WeekView = ({
   };
 
   return (
-    <Box sx={{ width: '100%', overflowX: 'auto' }}>
-      {/* Week Header */}
-      <Grid
-        container
-        sx={{
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          marginBottom: theme.spacing(1)
-        }}
-      >
-        <Grid item xs={2}></Grid>
-        {weekDays.map((day) => (
-          <Grid item xs key={day.toISOString()}>
-            <Typography variant="subtitle2" align="center">
-              {format(day, 'EEE dd')}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
+    <Box sx={{ 
+      width: '100%', 
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      '& .MuiGrid-container': {
+        width: '100%',
+        margin: 0,
+        maxWidth: '100%'
+      },
+      '& .MuiGrid-item': {
+        padding: theme.spacing(0.5),
+        minWidth: 0
+      }
+    }}>
+      {/* Week Header - Only show on desktop */}
+      {!isTablet && (
+        <Grid
+          container
+          sx={{
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            marginBottom: theme.spacing(0.5),
+            width: '100%',
+            '& .MuiGrid-item': {
+              flexShrink: 1,
+              width: 'auto'
+            }
+          }}
+        >
+          <Grid 
+            item 
+            xs={1}
+            sx={{
+              minWidth: is1024Screen ? '40px' : '60px',
+              maxWidth: is1024Screen ? '40px' : '60px'
+            }}
+          />
+          {weekDays.map((day) => (
+            <Grid 
+              item 
+              xs 
+              key={day.toISOString()}
+              sx={{
+                flexGrow: 1,
+                flexBasis: 0
+              }}
+            >
+              <Typography 
+                variant="subtitle2" 
+                align="center"
+                noWrap
+                sx={{
+                  fontSize: is1024Screen ? '0.7rem' : '0.875rem'
+                }}
+              >
+                {format(day, 'EEE dd')}
+              </Typography>
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
       {/* Hours and Events */}
       {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
@@ -141,25 +186,38 @@ const WeekView = ({
           key={hour}
           sx={{
             borderBottom: `1px solid ${theme.palette.divider}`,
-            height: `${HOUR_HEIGHT}px`,
-            position: 'relative'
+            minHeight: `${HOUR_HEIGHT}px`,
+            position: 'relative',
+            flexDirection: isTablet ? 'column' : 'row'
           }}
         >
           {/* Time Column */}
           <Grid
             item
-            xs={2}
+            xs={isTablet ? 12 : 1}
             sx={{
               display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: 'flex-start',
-              paddingTop: '8px'
+              alignItems: 'center',
+              justifyContent: isTablet ? 'flex-start' : 'flex-start',
+              paddingLeft: isTablet ? 2 : 1,
+              borderRight: isTablet ? 'none' : `1px solid ${theme.palette.divider}`,
+              backgroundColor: isTablet ? 'transparent' : 'transparent',
+              minWidth: isTablet ? 'auto' : '60px',
+              position: isTablet ? 'sticky' : 'relative',
+              left: isTablet ? 0 : 'auto',
+              zIndex: isTablet ? 1 : 'auto'
             }}
           >
-            <Typography variant="body2">
+            <Typography 
+              variant="body2"
+              sx={{
+                fontWeight: 'normal',
+                fontSize: isTablet ? '0.9rem' : '0.875rem'
+              }}
+            >
               {hour === 0 ? '12 AM' : 
                hour === 12 ? '12 PM' : 
-               hour < 12 ? `${hour} AM` : `${hour - 12} PM`}
+               hour < 12 ? `${hour} AM` : `${hour-12} PM`}
             </Typography>
           </Grid>
 
@@ -172,25 +230,37 @@ const WeekView = ({
             return (
               <Grid
                 item
-                xs
+                xs={isTablet ? 12 : true}
                 key={day.toISOString()}
                 sx={{
                   position: 'relative',
-                  height: '100%',
-                  borderLeft: `1px solid ${theme.palette.divider}`
+                  minHeight: isTablet ? 'auto' : '100%',
+                  borderLeft: isTablet ? 'none' : `1px solid ${theme.palette.divider}`,
+                  display: isTablet ? 'flex' : 'block',
+                  flexDirection: isTablet ? 'column' : 'row',
+                  alignItems: isTablet ? 'center' : 'stretch',
+                  justifyContent: isTablet ? 'center' : 'flex-start',
+                  pl: isTablet ? 2 : 1,
+                  pr: isTablet ? 2 : 1,
+                  pt: isTablet ? 1 : 0,
+                  pb: isTablet ? 1 : 0
                 }}
               >
                 {hourEvents.map((event) => (
                   <Box
                     key={event.id}
                     sx={{
-                      position: 'absolute',
-                      top: event.top,
-                      height: event.height,
-                      left: '8px',
-                      right: '8px',
-                      maxWidth: EVENT_WIDTH,
-                      zIndex: 1
+                      position: isTablet ? 'relative' : 'absolute',
+                      top: isTablet ? 0 : event.top,
+                      height: isTablet ? 'auto' : event.height,
+                      width: isTablet ? '80%' : EVENT_WIDTH,
+                      margin: isTablet ? '0 auto' : 0,
+                      mb: isTablet ? 1 : 0,
+                      '@media (width: 1024px)': {
+                        left: '2px',
+                        right: '2px',
+                        maxWidth: 'calc(100% - 4px)'
+                      }
                     }}
                   >
                     <MainEventView

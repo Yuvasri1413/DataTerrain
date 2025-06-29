@@ -1,23 +1,23 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
+import {
+  Box,
+  Typography,
   Button,
-  IconButton, 
+  IconButton,
   useTheme,
   Tabs,
   Tab,
   styled,
   useMediaQuery
 } from '@mui/material';
-import { 
-  ChevronLeft as ChevronLeftIcon, 
-  ChevronRight as ChevronRightIcon 
+import {
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon
 } from '@mui/icons-material';
-import { 
-  format, 
-  startOfWeek, 
-  endOfWeek 
+import {
+  format,
+  startOfWeek,
+  endOfWeek
 } from 'date-fns';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
@@ -53,11 +53,11 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   }
 }));
 
-const CalendarHeader = ({ 
-  currentDate, 
-  viewType, 
-  onViewChange, 
-  onDateChange 
+const CalendarHeader = ({
+  currentDate,
+  viewType,
+  onViewChange,
+  onDateChange
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -65,7 +65,7 @@ const CalendarHeader = ({
 
   // Render date title based on view type
   const renderDateTitle = () => {
-    switch(viewType) {
+    switch (viewType) {
       case 'day':
         return format(currentDate, 'MMMM d, yyyy');
       case 'week':
@@ -87,10 +87,10 @@ const CalendarHeader = ({
   };
 
   return (
-<>
+    <>
       {/* First Row: Create Schedule Button */}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           display: 'flex',
           justifyContent: 'flex-end',
           padding: theme.spacing(1, 0)
@@ -98,7 +98,7 @@ const CalendarHeader = ({
       >
         <Button
           color="primary"
-          sx={{ 
+          sx={{
             textTransform: 'none',
             borderRadius: 2,
             padding: theme.spacing(1, 2),
@@ -116,8 +116,8 @@ const CalendarHeader = ({
       </Box>
 
       {/* Second Row: Navigation and Tabs */}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           display: 'flex',
           flexDirection: isMobile ? 'column' : 'row',
           alignItems: 'center',
@@ -127,15 +127,15 @@ const CalendarHeader = ({
         }}
       >
         {/* Date Navigation with Separate Buttons */}
-        <Box sx={{ 
-          display: 'flex', 
+        <Box sx={{
+          display: 'flex',
           alignItems: 'center',
           width: isMobile ? '100%' : 'auto',
           justifyContent: isMobile ? 'space-between' : 'flex-start'
         }}>
-          <IconButton 
+          <IconButton
             onClick={() => onDateChange('prev')}
-            sx={{ 
+            sx={{
               color: theme.palette.text.primary,
               backgroundColor: 'white',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -148,10 +148,10 @@ const CalendarHeader = ({
           >
             <ChevronLeftIcon />
           </IconButton>
-        
-          <IconButton 
+
+          <IconButton
             onClick={() => onDateChange('next')}
-            sx={{ 
+            sx={{
               color: theme.palette.text.primary,
               backgroundColor: 'white',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -165,18 +165,19 @@ const CalendarHeader = ({
             <ChevronRightIcon />
           </IconButton>
         </Box>
-        <Typography 
-            variant="body1" 
-            sx={{ 
-              mx: 2,
-              textAlign: 'center',
+        <Typography
+          variant="body1"
+          sx={{
+            mx: 2,
+            textAlign: 'center',
+            fontSize: '1 rem',
               ...(isMobile && {
-                fontSize: '0.875rem'
-              })
-            }}
-          >
-            {renderDateTitle()}
-          </Typography>
+              fontSize: '0.875rem'
+            })
+          }}
+        >
+          {renderDateTitle()}
+        </Typography>
         {/* View Type Tabs */}
         <StyledTabs
           value={viewType}
@@ -193,7 +194,7 @@ const CalendarHeader = ({
           <StyledTab value="year" label="Year" />
         </StyledTabs>
       </Box>
-</>
+    </>
   );
 };
 
