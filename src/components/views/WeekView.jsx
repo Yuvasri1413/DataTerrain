@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Box, 
   Typography, 
@@ -12,17 +12,89 @@ import {
   startOfWeek, 
   addDays 
 } from 'date-fns';
+import MainEventView from '../Events/MainEventView';
+import MultiEventView from '../Events/MultiEventView';
+import MultiEventPopover from '../Events/MultiEventPopover';
+import EventModal from '../Events/EventModal';
 
 const WeekView = ({ 
   currentDate, 
   events, 
-  onEventClick 
+  onEventClick,
+  onEditEvent,
+  onDeleteEvent
 }) => {
   const theme = useTheme();
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [multiEvents, setMultiEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Calculate week start and days
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
+  // Helper function to convert time to 24-hour format for consistent comparison
+  const convertTo24HourFormat = (timeStr) => {
+    if (!timeStr) return null;
+    
+    // Remove spaces and convert to uppercase
+    const cleanedTime = timeStr.replace(/\s/g, '').toUpperCase();
+    
+    // Parse hours and period
+    const match = cleanedTime.match(/(\d+):?(\d*)(AM|PM)?/);
+    if (!match) return null;
+    
+    let [, hours, minutes, period] = match;
+    hours = parseInt(hours, 10);
+    minutes = minutes ? parseInt(minutes, 10) : 0;
+    
+    // Adjust hours for PM
+    if (period === 'PM' && hours !== 12) {
+      hours += 12;
+    }
+    // Adjust hours for 12 AM
+    if (period === 'AM' && hours === 12) {
+      hours = 0;
+    }
+    
+    return hours;
+  };
+
+  // Helper function to format hour display
+  const formatHourDisplay = (hour) => {
+    if (hour === 0) return '12 AM';
+    if (hour === 12) return '12 PM';
+    return hour > 12 
+      ? `${hour - 12} PM` 
+      : `${hour} AM`;
+  };
+
+  const handleEventClick = (event, target, similarEvents) => {
+    if (similarEvents && similarEvents.length > 1) {
+      setMultiEvents(similarEvents);
+      setAnchorEl(target);
+    } else {
+      setSelectedEvent(event);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleMultiEventSelect = (event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+    setAnchorEl(null);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setMultiEvents([]);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
 
   return (
     <Box sx={{ width: '100%', overflowX: 'auto' }}>
@@ -45,7 +117,7 @@ const WeekView = ({
       </Grid>
 
       {/* Hours and Events */}
-      {[10, 11, 12, 1, 2, 3, 4, 5, 6].map((hour) => (
+      {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
         <Grid
           container
           key={hour}
@@ -65,7 +137,7 @@ const WeekView = ({
             }}
           >
             <Typography variant="body2">
-              {`${hour} ${hour > 12 ? 'PM' : 'AM'}`}
+              {formatHourDisplay(hour)}
             </Typography>
           </Grid>
 
@@ -78,42 +150,74 @@ const WeekView = ({
               sx={{
                 position: 'relative',
                 minHeight: '100px',
-                borderLeft: `1px solid ${theme.palette.divider}`
+                borderLeft: `1px solid ${theme.palette.divider}`,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center', 
+                
               }}
             >
               {events
-                .filter(event =>
+                .filter((event, index, self) =>
                   format(parseISO(event.date), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') &&
-                  parseInt(event.startTime.split(':')[0]) === hour
+                  convertTo24HourFormat(event.startTime) === hour &&
+                  index === self.findIndex(e => 
+                    e.title === event.title && 
+                    e.startTime === event.startTime && 
+                    e.interviewer === event.interviewer
+                  )
                 )
                 .map((event, index) => (
-                  <Paper
+                  <MainEventView
                     key={event.id}
-                    elevation={2}
-                    sx={{
-                      position: 'absolute',
-                      width: '100%',
-                      backgroundColor: theme.palette.primary.light,
-                      color: theme.palette.primary.contrastText,
-                      padding: theme.spacing(0.5),
-                      marginTop: `${index * 30}px`,
-                      borderRadius: theme.spacing(1),
-                      cursor: 'pointer'
-                    }}
-                    onClick={(e) => onEventClick(event, e.currentTarget)}
-                  >
-                    <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-                      {event.title}
-                    </Typography>
-                    <Typography variant="caption" display="block">
-                      {event.startTime} - {event.endTime}
-                    </Typography>
-                  </Paper>
+                    event={event}
+                    currentDate={day}
+                    events={events}
+                    onEventClick={(event, target, similarEvents) => 
+                      handleEventClick(event, target, similarEvents)
+                    }
+                  />
                 ))}
             </Grid>
           ))}
         </Grid>
       ))}
+
+      {/* Multi Event Popover */}
+      <MultiEventPopover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        id="multi-event-popover"
+        handlePopoverClose={handleClosePopover}
+      >
+        <MultiEventView
+          events={multiEvents}
+          onEventSelect={handleMultiEventSelect}
+          onClose={handleClosePopover}
+          onEdit={(event) => {
+            setSelectedEvent(event);
+            setIsModalOpen(true);
+            handleClosePopover();
+          }}
+          onDelete={onDeleteEvent}
+        />
+      </MultiEventPopover>
+
+      {/* Event Modal */}
+      {isModalOpen && selectedEvent && (
+        <EventModal
+          event={selectedEvent}
+          onEdit={(updatedEvent) => {
+            onEditEvent(updatedEvent);
+            handleCloseModal();
+          }}
+          onDelete={() => {
+            onDeleteEvent(selectedEvent);
+            handleCloseModal();
+          }}
+          onClose={handleCloseModal}
+        />
+      )}
     </Box>
   );
 };

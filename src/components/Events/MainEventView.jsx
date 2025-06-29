@@ -18,9 +18,9 @@ const MainEventCard = ({ event }) => {
         md: 1
       },
       pl: {
-        xs: 2,
-        sm: 3,
-        md: 4
+        xs: 1,
+        sm: 1,
+        md: 1
       },
       display: 'flex',
       alignItems: 'flex-start',
@@ -29,9 +29,9 @@ const MainEventCard = ({ event }) => {
       overflow: 'hidden',
       width: 'auto',
       minWidth: {
-        xs: '100px',
-        sm: '150px',
-        md: '200px'
+        xs: '125px',
+        sm: '125px',
+        md: '125px'
       }
     }}>
       <Typography
@@ -39,15 +39,15 @@ const MainEventCard = ({ event }) => {
         sx={{
           fontWeight: 'bold',
           fontSize: {
-            xs: '0.7rem',
-            sm: '0.8rem',
-            md: '0.9rem'
+            xs: '0.65rem',
+            sm: '0.75rem',
+            md: '0.85rem'
           },
           wordBreak: 'break-word',
           mb: {
-            xs: 0.25,
-            sm: 0.35,
-            md: 0.5
+            xs: 0.2,
+            sm: 0.25,
+            md: 0.3
           }
         }}
       >
@@ -58,15 +58,15 @@ const MainEventCard = ({ event }) => {
         color="textSecondary"
         sx={{
           fontSize: {
-            xs: '0.6rem',
-            sm: '0.7rem',
-            md: '0.8rem'
+            xs: '0.55rem',
+            sm: '0.65rem',
+            md: '0.75rem'
           },
           wordBreak: 'break-word',
           mb: {
             xs: 0.15,
-            sm: 0.25,
-            md: 0.35
+            sm: 0.2,
+            md: 0.25
           }
         }}
       >
@@ -77,9 +77,9 @@ const MainEventCard = ({ event }) => {
         color="textSecondary"
         sx={{
           fontSize: {
-            xs: '0.5rem',
-            sm: '0.6rem',
-            md: '0.7rem'
+            xs: '0.45rem',
+            sm: '0.55rem',
+            md: '0.65rem'
           },
           wordBreak: 'break-word'
         }}
@@ -96,7 +96,6 @@ const MainEventView = ({
   onEventClick
 }) => {
   const theme = useTheme();
-  debugger;
   return (
     <Paper
       elevation={2}
@@ -105,9 +104,10 @@ const MainEventView = ({
         maxWidth: '100%',
         backgroundColor: 'white',
         border: '1px solid #e0e0e0',
-        borderRadius: 1,
+        borderRadius: 0.5,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
         marginBottom: theme.spacing(1),
         position: 'relative',
         transition: 'all 0.3s ease',
