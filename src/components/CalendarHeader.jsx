@@ -14,7 +14,11 @@ import {
   ChevronLeft as ChevronLeftIcon, 
   ChevronRight as ChevronRightIcon 
 } from '@mui/icons-material';
-import { format } from 'date-fns';
+import { 
+  format, 
+  startOfWeek, 
+  endOfWeek 
+} from 'date-fns';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   minHeight: 'auto',
@@ -65,10 +69,8 @@ const CalendarHeader = ({
       case 'day':
         return format(currentDate, 'MMMM d, yyyy');
       case 'week':
-        const weekStart = new Date(currentDate);
-        weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
+        const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
+        const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
         return `${format(weekStart, 'MMMM d')} to ${format(weekEnd, 'MMMM d, yyyy')}`;
       case 'month':
         return format(currentDate, 'MMMM yyyy');

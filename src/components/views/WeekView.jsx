@@ -10,7 +10,10 @@ import {
   format, 
   parseISO, 
   startOfWeek, 
-  addDays 
+  addDays,
+  isWithinInterval,
+  startOfDay,
+  endOfDay
 } from 'date-fns';
 import MainEventView from '../Events/MainEventView';
 import MultiEventView from '../Events/MultiEventView';
@@ -154,30 +157,57 @@ const WeekView = ({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center', 
-                
+                padding: '10px',
               }}
             >
-              {events
-                .filter((event, index, self) =>
-                  format(parseISO(event.date), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd') &&
-                  convertTo24HourFormat(event.startTime) === hour &&
-                  index === self.findIndex(e => 
-                    e.title === event.title && 
-                    e.startTime === event.startTime && 
-                    e.interviewer === event.interviewer
-                  )
-                )
-                .map((event, index) => (
-                  <MainEventView
-                    key={event.id}
-                    event={event}
-                    currentDate={day}
-                    events={events}
-                    onEventClick={(event, target, similarEvents) => 
-                      handleEventClick(event, target, similarEvents)
+              {(() => {
+                // Create a Set to track unique events
+                const uniqueEventKeys = new Set();
+
+                // Filter events for this day and hour
+                const filteredEvents = events
+                  .filter((event) => {
+                    // Try parsing the date from different possible formats
+                    let eventDate;
+                    try {
+                      // First try parsing the date directly
+                      eventDate = parseISO(event.date);
+                    } catch {
+                      // If that fails, try creating a date from the input
+                      eventDate = new Date(event.date);
                     }
-                  />
-                ))}
+
+                    // Check if the event date is the same as the current day
+                    const isSameDay = format(eventDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd');
+                    
+                    // Check if the event's hour matches the current hour
+                    const eventHour = convertTo24HourFormat(event.startTime);
+                    const isCorrectHour = eventHour === hour;
+
+                    // Create a unique key for the event
+                    const eventKey = `${event.title}-${event.interviewer}-${event.startTime}-${event.endTime}`;
+
+                    // Only include the event if it's on the same day, same hour, and not a duplicate
+                    if (isSameDay && isCorrectHour && !uniqueEventKeys.has(eventKey)) {
+                      uniqueEventKeys.add(eventKey);
+                      return true;
+                    }
+                    return false;
+                  })
+                  .map((event, index) => (
+                    <MainEventView
+                      key={`${event.id}-${index}`}
+                      event={event}
+                      currentDate={day}
+                      events={events}
+                      onEventClick={(event, target, similarEvents) => 
+                        handleEventClick(event, target, similarEvents)
+                      }
+                    />
+                  ));
+
+                return filteredEvents;
+              })()}
             </Grid>
           ))}
         </Grid>

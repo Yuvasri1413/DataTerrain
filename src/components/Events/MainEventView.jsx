@@ -93,7 +93,8 @@ const MainEventView = ({
   event,
   currentDate,
   events,
-  onEventClick
+  onEventClick,
+  view = 'day' // Default to day view
 }) => {
   const theme = useTheme();
   return (
@@ -119,16 +120,20 @@ const MainEventView = ({
       }}
       onClick={(e) => {
         const similarEvents = events.filter(
-          ev => ev.startTime === event.startTime &&
-            format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+          view === 'month' 
+            ? ev => format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+            : ev => ev.startTime === event.startTime && 
+                    format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
         );
         onEventClick(event, e.currentTarget, similarEvents);
       }}
     >
       {(() => {
         const similarEventsCount = events.filter(
-          ev => ev.startTime === event.startTime &&
-            format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+          view === 'month'
+            ? ev => format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
+            : ev => ev.startTime === event.startTime && 
+                    format(parseISO(ev.date), 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd')
         ).length;
 
         return similarEventsCount > 1 ? (
