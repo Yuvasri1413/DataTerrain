@@ -257,6 +257,22 @@ const WeekView = ({
                       width: isTablet ? '80%' : EVENT_WIDTH,
                       margin: isTablet ? '0 auto' : 0,
                       mb: isTablet ? 1 : 0,
+                      zIndex: 2,
+                      '& > *': {
+                        height: '100%',
+                        position: 'relative',
+                        zIndex: 2,
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: -1,
+                          left: 0,
+                          right: 0,
+                          bottom: -1,
+                          background: 'inherit',
+                          zIndex: -1
+                        }
+                      },
                       '@media (width: 1024px)': {
                         left: '2px',
                         right: '2px',
